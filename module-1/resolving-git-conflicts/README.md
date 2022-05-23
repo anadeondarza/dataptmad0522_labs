@@ -1,6 +1,6 @@
 ![Ironhack logo](https://i.imgur.com/1QgrNNw.png)
 
-# Lab | Resolving Git Conflicts (cambio para git)
+# Lab | Resolving Git Conflicts (cambio para git - lab finished)
 
 ## Introduction
 
