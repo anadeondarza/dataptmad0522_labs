@@ -1,3 +1,0 @@
-def validacion(a,c):
-    if a>5 and c>5:
-        print("Try again")

@@ -1,6 +1,0 @@
-def calculation(b): 
-    if b == "plus":
-        print(a,"plus", c, "equals", a+c)
-    elif b == "minus":
-        print(a,"minus", c, "equals", a-c)
-    return(b)
