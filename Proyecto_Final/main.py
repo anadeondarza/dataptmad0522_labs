@@ -6,6 +6,12 @@ import requests
 from shapely.geometry import Point
 import geopandas as gpd 
 
+query_1 = '''
+
+    SELECT *
+    FROM bicimad_stations
+    '''
+
 if __name__ == '__main__':
 
     def to_mercator(lat, long):
@@ -45,13 +51,7 @@ if __name__ == '__main__':
     connect_str = 'mysql+pymysql://ironhack_user:%Vq=c>G5@173.201.189.217/BiciMAD'
     engine = create_engine(connect_str)
     inspector = inspect(engine)
-
-    query_1 = '''
-
-    SELECT *
-    FROM bicimad_stations
-    '''
-
+    
     df = pd.read_sql_query(query_1, connect_str)
 
     df[["longitud","latitud"]]=df["geometry.coordinates"].str.split(",",expand=True)

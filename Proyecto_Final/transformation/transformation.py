@@ -24,5 +24,5 @@ def unir_dfs (df1, df2):
     return df
 
 def transformation_sql_df(path):
-    df = pd.read_sql_query(query, path)
+    df = pd.read_sql_query(query_1, path)
     return df
