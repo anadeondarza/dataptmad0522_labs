@@ -1,19 +1,8 @@
 
-from acquisition import acquisition as ac
-from acquisition import acquisition2 as ac2
-
-from transformation import transformatio_api as ta
-from transformation import transformation_df as tad
-from transformation import unir_dfs as ud
-from transformation import transformation_sql_df as tsd
-
-from manipulation import new_columns_df as mp 
-from manipulation import drop_columns as dc
-from manipulation import union as un
-from manipulation import mindistance as min
-from manipulation import rename as rn
-
-from geofunciones import apply_lamda as lam
+import acquisition as ac
+import transformation as ta
+import manipulation as mp 
+import geofunciones as lam
 
 path1 = 'https://datos.madrid.es/egob/GET/catalogo/209434-0-templos-otros.json'
 path2 = 'https://datos.madrid.es/egob/GET/catalogo/209426-0-templos-catolicas.json'
@@ -45,26 +34,28 @@ colw = 'address'
 colw_newname = 'Station location'
 colv = 'Type_of_pace'
 colv_newname = 'Type of place'
+colf = 'distancia_final'
+cola = 'title'
 
 
 if __name__ == '__main__':
 
     json_1 = ac.acquisition(path1)
     json_2 = ac.acquisition(path2)
-    df = ac2.acquisition2(path3)
+    df = ac.acquisition2(path3)
     df1 = ta.transformatio_api(json_1)
     df2 = ta.transformatio_api(json_2)
-    df3 = tad.transformation_df(df1)
-    df4 = tad.transformation_df(df2)
-    df_final = ud.unir_dfs(df3, df4)
-    df_sql = tsd.transformation_sql_df(path3)
+    df3 = ta.transformation_df(df1)
+    df4 = ta.transformation_df(df2)
+    df_final = ta.unir_dfs(df3, df4)
+    df_sql = ta.transformation_sql_df(path3)
     df_newcolumnsql = mp.new_columns_df (df_sql, new_col_1, new_col_2, col6, x , y, c)
-    df_casisql = dc.drop_columns(df_newcolumnsql,cols)
-    df_casiapi = dc.drop_columns(df_final, cols2)
-    df_resultado = un.union(df_casiapi,df_casisql, key, how, on)
+    df_casisql = mp.drop_columns(df_newcolumnsql,cols)
+    df_casiapi = mp.drop_columns(df_final, cols2)
+    df_resultado = mp.union(df_casiapi,df_casisql, key, how, on)
     df__func = lam.apply_lamda (df_resultado, col_output, col1, col2, col3, col4)
-    df_result = min.mindistance (df_resultado)
-    resultado = rn.rename (df_result,columns)
+    df_result = mp.mindistance (df_resultado,colf, cola)
+    resultado = mp.rename (df_result,columns)
 
 
 

@@ -51,7 +51,7 @@ if __name__ == '__main__':
     connect_str = 'mysql+pymysql://ironhack_user:%Vq=c>G5@173.201.189.217/BiciMAD'
     engine = create_engine(connect_str)
     inspector = inspect(engine)
-    
+
     df = pd.read_sql_query(query_1, connect_str)
 
     df[["longitud","latitud"]]=df["geometry.coordinates"].str.split(",",expand=True)
@@ -67,11 +67,14 @@ if __name__ == '__main__':
 
     union["distancia_final"] = union.apply(lambda x: distance_meters(x['location.latitude'], x['location.longitude'], x['latitud'], x['longitud']), axis=1)
 
-    union_min = union.groupby(['title']).agg('min')
+    union = union.groupby(['distancia_final']).agg('min')
+    union = union.sort_values(by=['title', 'distancia_final'])
+    union = union.drop_duplicates('title', keep='first')
 
-    resultado = union_min.drop(['index','location.latitude', 'location.longitude', 'key','latitud','longitud','distancia_final'], axis =1)
+    resultado = union.drop(['index','location.latitude', 'location.longitude', 'key','latitud','longitud','distancia_final'], axis =1)
 
     resultado_1 = resultado.rename(columns={'title': 'Place of interest', 'address.street-address':'Place address', 'name': 'BiciMAD station', 'address': 'Station location', 'Type_of_pace' : 'Type of place'})
 
+    resultado_1
 
    

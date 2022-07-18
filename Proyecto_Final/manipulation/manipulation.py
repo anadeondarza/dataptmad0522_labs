@@ -17,9 +17,12 @@ def union (df1, df2, hey,how, on):
     df = df1.assign(key="i").merge(df2.assign(key="i"), how='left', on='key')
     return df
 
-#def mindistance (df):
-    #df = union.groupby([col]).agg('min')
-    #return df
+def mindistance (df, colf, cola):
+    df = df.groupby(['colf']).agg('min')
+    df= df.sort_values(by=['colf', 'cola'])
+    df = df.drop_duplicates('colf', keep='first')
+    return 
+
 
 def rename (df, columns):
     df = df.rename(columns={'colz': 'colz_newname', 'coly':'coly_newname', 'colx': 'colx_newname', 'colw': 'colw_newname', 'colv' : 'colv_newname'})

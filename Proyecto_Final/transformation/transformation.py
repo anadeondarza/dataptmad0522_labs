@@ -23,6 +23,6 @@ def unir_dfs (df1, df2):
     df = pd.concat([df1, df2], axis=0)
     return df
 
-def transformation_sql_df(path):
+def transformation_sql_df(path, query_1):
     df = pd.read_sql_query(query_1, path)
     return df
