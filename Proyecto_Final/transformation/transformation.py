@@ -6,7 +6,6 @@ import requests
 
 
 query_1 = '''
-
 SELECT *
 FROM bicimad_stations
 '''

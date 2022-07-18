@@ -1,4 +1,3 @@
-import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy import inspect
 import pandas as pd
@@ -12,7 +11,7 @@ def acquisition(path):
     jsons = response.json()
     return(jsons)
 
-def acquisition2(path):
+def acquisition2(connect_str):
     engine = create_engine(connect_str)
     inspector = inspect(engine)
     return(inspector)
