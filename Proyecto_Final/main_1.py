@@ -60,8 +60,6 @@ if __name__ == '__main_1__':
     df_result = mp.mindistance (df_resultado,colf, cola)
     resultado = mp.rename (df_result,columns)
 
-    resultado
-
     def argument_parser():  
         parser = argparse.ArgumentParser(description= 'Por favor indica si quieres la información de una estación o todas' )
         parser.add_argument('-f', '--function', type=str)
@@ -70,12 +68,13 @@ if __name__ == '__main_1__':
 
     if __name__ == '__main__':
         print(type(argument_parser()))
-        if argument_parser() == 'todas':
+        if argument_parser().funtion == 'todas':
             result = pd.read_csv('/Users/anadeondarza/Desktop/ironhack_data/dataptmad0522_labs/Proyecto_Final.cvs')
-        elif argument_parser() == 'una':
+        elif argument_parser().function == 'una':
             print (input('Qué momento quieres saber?'))
             result =  resultado.loc[resultado['Place of interest'] == 'Place of interest']
         else:
             print(result = 'FATAL ERROR...you need to select the correct method')
         print(f'The result is => {result}')
+
     

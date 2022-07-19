@@ -1,4 +1,4 @@
-import sqlalchemy
+
 from sqlalchemy import create_engine
 from sqlalchemy import inspect
 import pandas as pd
@@ -29,7 +29,6 @@ if __name__ == '__main__':
 
     response = requests.get('https://datos.madrid.es/egob/GET/catalogo/209434-0-templos-otros.json')
     jsons_1 = response.json()
-    jsons_1.keys()
     json_trabajado = jsons_1['@graph']
 
 
