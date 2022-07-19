@@ -66,15 +66,15 @@ if __name__ == '__main_1__':
         args = parser.parse_args()
         return args
 
-    if __name__ == '__main__':
-        print(type(argument_parser()))
-        if argument_parser().funtion == 'todas':
-            result = pd.read_csv('/Users/anadeondarza/Desktop/ironhack_data/dataptmad0522_labs/Proyecto_Final.cvs')
-        elif argument_parser().function == 'una':
-            print (input('Qué momento quieres saber?'))
-            result =  resultado.loc[resultado['Place of interest'] == 'Place of interest']
-        else:
-            print(result = 'FATAL ERROR...you need to select the correct method')
-        print(f'The result is => {result}')
+
+    print(type(argument_parser()))
+    if argument_parser() == 'todas':
+        result = pd.read_csv('/Users/anadeondarza/Desktop/ironhack_data/dataptmad0522_labs/Proyecto_Final.cvs')
+    elif argument_parser() == 'una':
+        print (input('Qué momento quieres saber?'))
+        result =  resultado.loc[resultado['Place of interest'] == 'Place of interest']
+    else:
+        print(result = 'FATAL ERROR...you need to select the correct method')
+    print(f'The result is => {result}')
 
     
