@@ -1,4 +1,3 @@
-import pandas as pd
 from shapely.geometry import Point
 import geopandas as gpd 
 
@@ -14,6 +13,6 @@ def distance_meters(lat_start, long_start, lat_finish, long_finish):
     finish = to_mercator(lat_finish, long_finish)
     return start.distance(finish)
 
-def apply_lamda(df, col_output, col1, col2, col3, col4):
+def apply_lamda(df, func, col_output, col1, col2, col3, col4):
     df['col'] = df.apply(lambda x: 'func'(x['col1'], x['col2'], x['col3'], x['col4']), axis=1)
     return df

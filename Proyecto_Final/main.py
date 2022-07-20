@@ -1,79 +1,87 @@
-
-from sqlalchemy import create_engine
-from sqlalchemy import inspect
+# coding: utf-8
 import pandas as pd
-import requests
-from shapely.geometry import Point
-import geopandas as gpd 
+from modulos.acquisition import acquisition as ac
+from modulos.transformation import transformation as ta
+from modulos.manipulation import manipulation as mp 
+from modulos.geofunciones import geofunciones as lam
+import argparse
 
+
+path1 = 'https://datos.madrid.es/egob/GET/catalogo/209434-0-templos-otros.json'
+path2 = 'https://datos.madrid.es/egob/GET/catalogo/209426-0-templos-catolicas.json'
+connect_str = 'mysql+pymysql://ironhack_user:%Vq=c>G5@173.201.189.217/BiciMAD'
+new_col_1 = ["longitud"]
+col6 = "geometry.coordinates"
+new_col_2 = ["latitud"]
+col6 = ["geometry.coordinates"]
+x = ","
+y = '['
+c = ']'
+cols = ['id', 'light', 'number','activate','no_available','geometry.coordinates', 'total_bases', 'dock_bikes', 'free_bases','reservations_count','geometry.type']
+cols2 = ['@id', '@type', 'id','relation','address.district.@id', 'address.area.@id', 'address.locality', 'address.postal-code','organization.organization-desc','organization.accesibility', 'organization.schedule', 'organization.services', 'organization.organization-name']
+col1 = 'location.latitude'
+col2 = 'location.longitude'
+col3 = 'latitud'
+col4 = 'longitud'
+key= "i"
+how='left'
+on='key'
+col_output = ["distancia_final"]
+columns={'colz': 'colz_newname', 'coly':'coly_newname', 'colx': 'colx_newname', 'colw': 'colw_newname', 'colv' : 'colv_newname'}
+colz = 'title'
+colz_newname = 'Place of interest'
+coly = 'address.street-address'
+coly_newname = 'Place address'
+colx = 'name'
+colx_newname = 'BiciMAD station'
+colw = 'address'
+colw_newname = 'Station location'
+colv = 'Type_of_pace'
+colv_newname = 'Type of place'
+colf = 'distancia_final'
+cola = 'title'
+func = 'distance_meters'
+key1 ='@graph'
 query_1 = '''
 
     SELECT *
     FROM bicimad_stations
     '''
 
+
 if __name__ == '__main__':
 
-    def to_mercator(lat, long):
-    # transform latitude/longitude data in degrees to pseudo-mercator coordinates in metres
-     c = gpd.GeoSeries([Point(lat, long)], crs=4326)
-     c = c.to_crs(3857)
-     return c
+    json_1 = ac.acquisition_1(path1)
+    json_2 = ac.acquisition_1(path2)
+    df = ac.acquisition_2(connect_str)
+    df1 = ta.transformatio_api(json_1, key1)
+    df2 = ta.transformatio_api(json_2, key1)
+    df3 = ta.transformation_df(df1)
+    df4 = ta.transformation_df(df2)
+    df_final = ta.unir_dfs(df3, df4)
+    df_sql = ta.transformation_sql_df(connect_str, query_1)
+    df_newcolumnsql = mp.new_columns_df (df_sql, new_col_1, new_col_2, col6, x , y, c)
+    df_casisql = mp.drop_columns(df_newcolumnsql,cols)
+    df_casiapi = mp.drop_columns(df_final, cols2)
+    df_resultado = mp.union(df_casiapi,df_casisql, key, how, on)
+    df__func = lam.apply_lamda (func, df_resultado, col_output, col1, col2, col3, col4)
+    df_result = mp.mindistance (df_resultado,colf, cola)
+    resultado = mp.rename (df_result,columns)
 
-    def distance_meters(lat_start, long_start, lat_finish, long_finish):
-    # return the distance in metres between to latitude/longitude pair point in degrees (i.e.: 40.392436 / -3.6994487)
-        start = to_mercator(lat_start, long_start)
-        finish = to_mercator(lat_finish, long_finish)
-        return start.distance(finish)
+    def argument_parser():  
+        parser = argparse.ArgumentParser(description= 'Por favor indica si quieres la información de una estación o todas')
+        parser.add_argument('-f', type=str)
+        args = parser.parse_args()
+        return args
 
+    argument_parser()
+    if argument_parser() == 'todas':
+        result = pd.read_csv('/Users/anadeondarza/Desktop/ironhack_data/dataptmad0522_labs/Proyecto_Final.cvs')
+    elif argument_parser() == 'una':
+        print (input('Qué momento quieres saber?'))
+        result =  resultado.loc[resultado['Place of interest'] == 'Place of interest']
+    else:
+        result = 'FATAL ERROR...you need to select the correct method'
+    print(result)
 
-    response = requests.get('https://datos.madrid.es/egob/GET/catalogo/209434-0-templos-otros.json')
-    jsons_1 = response.json()
-    json_trabajado = jsons_1['@graph']
-
-
-    df_flat_1 = pd.json_normalize(json_trabajado)
-    df_flat_1= df_flat_1.assign(Type_of_place = "Templos no católicos")
-    df_flat_1
-
-    responses = requests.get('https://datos.madrid.es/egob/GET/catalogo/209426-0-templos-catolicas.json')
-    json = responses.json()
-
-    json_trabajado2 = json['@graph']
-
-    df_flat = pd.json_normalize(json_trabajado2)
-    df_flat= df_flat.assign(Type_of_place= "Templos Católicos")
-
-    df_templos = pd.concat([df_flat, df_flat_1], axis=0)
-    templos_df = df_templos.drop(['@id', '@type', 'id','relation','address.district.@id', 'address.area.@id', 'address.locality', 'address.postal-code','organization.organization-desc','organization.accesibility', 'organization.schedule', 'organization.services', 'organization.organization-name'], axis =1)
-
-    connect_str = 'mysql+pymysql://ironhack_user:%Vq=c>G5@173.201.189.217/BiciMAD'
-    engine = create_engine(connect_str)
-    inspector = inspect(engine)
-
-    df = pd.read_sql_query(query_1, connect_str)
-
-    df[["longitud","latitud"]]=df["geometry.coordinates"].str.split(",",expand=True)
-    df['longitud'] = df['longitud'].str.replace('[','',regex=True)
-    df["latitud"]=df['latitud'].str.replace(']','',regex=True)
-
-    df['latitud'] = df['latitud'].astype(float)
-    df['longitud'] = df['longitud'].astype(float)
-
-    estaciones_df = df.drop(['id', 'light', 'number','activate','no_available','geometry.coordinates', 'total_bases', 'dock_bikes', 'free_bases','reservations_count','geometry.type'], axis =1)
-
-    union = templos_df.assign(key="Union").merge(estaciones_df.assign(key="Union"), how='left', on='key')
-
-    union["distancia_final"] = union.apply(lambda x: distance_meters(x['location.latitude'], x['location.longitude'], x['latitud'], x['longitud']), axis=1)
-
-    union = union.groupby(['distancia_final']).agg('min')
-    union = union.sort_values(by=['title', 'distancia_final'])
-    union = union.drop_duplicates('title', keep='first')
-
-    resultado = union.drop(['index','location.latitude', 'location.longitude', 'key','latitud','longitud','distancia_final'], axis =1)
-
-    resultado_1 = resultado.rename(columns={'title': 'Place of interest', 'address.street-address':'Place address', 'name': 'BiciMAD station', 'address': 'Station location', 'Type_of_pace' : 'Type of place'})
-
-    resultado_1
-
-   
+    
