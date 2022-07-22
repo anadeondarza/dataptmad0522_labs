@@ -13,7 +13,7 @@ connect_str = 'mysql+pymysql://ironhack_user:%Vq=c>G5@173.201.189.217/BiciMAD'
 new_col_1 = ["longitud"]
 col6 = "geometry.coordinates"
 new_col_2 = ["latitud"]
-col6 = ["geometry.coordinates"]
+col = ["geometry.coordinates"]
 x = ","
 y = '['
 c = ']'
@@ -60,8 +60,8 @@ if __name__ == '__main__':
     df4 = ta.transformation_df(df2)
     df_final = ta.unir_dfs(df3, df4)
     df_sql = ta.transformation_sql_df(connect_str, query_1)
-    df_newcolumnsql = mp.new_columns_df (df_sql, new_col_1, new_col_2, col6, x , y, c)
-    df_casisql = mp.drop_columns(df_newcolumnsql,cols)
+    df_newcolumnsql = mp.new_columns_df (df_sql, new_col_1, new_col_2, col, x , y, c)
+    df_casisql = mp.drop_columns2(df_newcolumnsql,cols)
     df_casiapi = mp.drop_columns(df_final, cols2)
     df_resultado = mp.union(df_casiapi,df_casisql, key, how, on)
     df__func = lam.apply_lamda (func, df_resultado, col_output, col1, col2, col3, col4)

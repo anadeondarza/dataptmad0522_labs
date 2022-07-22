@@ -69,26 +69,25 @@ if __name__ == '__main__':
 
     resultado = union.drop(['location.latitude','location.longitude', 'key','latitud','longitud'], axis =1)
 
-    resultado_1 = resultado.rename(columns={'title': 'Place of interest', 'address.street-address':'Place address', 'name': 'BiciMAD station', 'address': 'Station location', 'Type_of_pace' : 'Type of place'})
+    resultado = resultado.rename(columns={'title': 'Place of interest', 'address.street-address':'Place address', 'name': 'BiciMAD station', 'address': 'Station location', 'Type_of_pace' : 'Type of place'})
 
     def argument_parser():  
-        parser = argparse.ArgumentParser(description= 'Por favor indica si quieres la información de una estación o todas')
+        parser = argparse.ArgumentParser(description= 'Por favor indica si quieres la informacion de una estacion o todas')
         parser.add_argument('-f','--function', type=str)
         args = parser.parse_args()
         return args
 
     argument_parser()
-    if argument_parser.function() == 'todas':
-        result = pd.read_csv('/Users/anadeondarza/Desktop/ironhack_data/dataptmad0522_labs/Proyecto_Final.cvs')
-    elif argument_parser.function() == 'una':
-        print (input('Qué momento quieres saber?'))
-        result =  resultado_1.loc[resultado_1['Place of interest'] == 'Place of interest']
+    if argument_parser().function == 'todas':
+        result = pd.read_csv('/Users/anadeondarza/Desktop/ironhack_data/dataptmad0522_labs/Proyecto_Final/final.csv')
+    elif argument_parser().function == 'una':
+        title = (input('Que monumento quieres saber?'))
+        result = resultado.loc[resultado['Place of interest'] == title]
+       # result1 = result1.to_csv('/Users/anadeondarza/Desktop/ironhack_data/dataptmad0522_labs/Proyecto_Final/result1.cvs')
+        # result = pd.read_csv('/Users/anadeondarza/Desktop/ironhack_data/dataptmad0522_labs/Proyecto_Final/result1.csv')
     else:
         result = 'FATAL ERROR...you need to select the correct method'
+
     print(result)
-
-
-
-
  
    
